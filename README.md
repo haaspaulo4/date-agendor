@@ -38,4 +38,34 @@ Um aplicativo web divertido, interativo e altamente romântico (com aquela esté
    ```
 4. Acesse em seu navegador:
    - **Quiz / Página Principal**: `http://127.0.0.1:5000`
-   - **Painel do Cupido**: `http://127.0.0.1:5000/painel`
+   - **Painel Cupido**: `http://127.0.0.1:5000/painel`
+
+---
+
+## 📸 Galeria do Amor (Demonstração Visual)
+
+Aqui está o passo a passo de como o Cartório Afetivo conduz seus pretendentes:
+
+### 1. Portal de Acesso do Cupido (Login)
+*Onde apenas corações autorizados entram com as credenciais padrão.*
+![Tela de Login](screen-shot/login.png)
+
+### 2. O Teste de Aptidão Emocional (Quiz)
+*Validando se as almas realmente combinam com as perguntas configuradas.*
+![Quiz de Compatibilidade](screen-shot/convite.png)
+
+### 3. A Decisão Inevitável (Evasão do Não)
+*O clássico momento onde dizer "Não" deixa de ser uma opção fisicamente realizável.*
+![Confirmação do Date](screen-shot/confirma-date.png)
+
+### 4. Selamento Contratual (Dados Finais)
+*Coleta de nomes oficiais, WhatsApp e data desejada.*
+![Formulário de Contrato](screen-shot/formulario-date.png)
+
+### 5. O Selo de Autenticidade (Certificado)
+*O documento oficial gerado para provar cientificamente a compatibilidade do date.*
+![Certificado Afetivo](screen-shot/certificado.png)
+
+### 6. Central do Cupido (Painel)
+*O cérebro da operação. Onde acompanhamos os dates aceitos, configuramos novos testes e monitoramos as estatísticas.*
+![Painel de Controle](screen-shot/painel.png)
