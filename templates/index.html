@@ -1,0 +1,251 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="love-card" style="transition: all 0.5s ease;">
+    <!-- Formulário Único que engloba respostas ocultas e dados finais -->
+    <form id="quiz-form" action="{{ url_for('agendar_post') }}" method="POST">
+        <input type="hidden" name="invitation_id" value="{{ invite.id if invite else '' }}">
+
+        <!-- Guardas Respostas Ocultas para submissão -->
+        <input type="hidden" name="quem_paga" id="hidden_quem_paga" value="{% if invite %}{{ invite.opcao_paga_1 }}{% else %}Você (100% financiado por conta própria){% endif %}">
+        <input type="hidden" name="comida" id="hidden_comida" value="{% if invite %}{{ invite.opcao_comida_1 }}{% else %}Pizza (clássica, preferência meia calabresa com borda){% endif %}">
+        <input type="hidden" name="assunto" id="hidden_assunto" value="{% if invite %}{{ invite.opcao_assunto_1 }}{% else %}Fofocas profundas sobre pessoas que nenhum de nós conhece{% endif %}">
+
+        <!-- PASSO 0: Boas-vindas -->
+        <div id="step-0" class="quiz-step active">
+            <h1>{% if invite %}{{ invite.titulo }}{% else %}Você recebeu um convite especial{% endif %}</h1>
+            <p class="subtitle">{% if invite %}{{ invite.subtitulo }}{% else %}Mas antes de descobrir o que é, precisamos validar sua compatibilidade emocional através do nosso teste de aptidão.{% endif %}</p>
+            <div class="gif-container">
+                <i class="fa-solid fa-heart-pulse"></i>
+            </div>
+            <button type="button" class="btn btn-yes btn-next" onclick="nextStep(1)" style="margin-top: 20px; float: none;">Iniciar Quiz!</button>
+        </div>
+
+        <!-- PASSO 1: Quem é mais incrível? -->
+        <div id="step-1" class="quiz-step" style="display: none;">
+            <h1>Pergunta 1</h1>
+            <p class="subtitle">Quem é a pessoa mais incrível e cheia de charme deste planeta?</p>
+
+            <div class="card-grid">
+                <div class="card-option" onclick="selectQuizOption('incredible', '{% if invite %}{{ invite.nome_pretendente }}{% else %}A pessoa que enviou o link{% endif %} (Óbvio)', 2)">
+                    <i class="fa-solid fa-arrow-up-long"></i>
+                    <strong>{% if invite %}{{ invite.nome_pretendente }}{% else %}A pessoa que mandou o link{% endif %}</strong>
+                    <span>Escolha óbvia, segura e 100% correta.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizOption('incredible', 'Você que está respondendo', 2)">
+                    <i class="fa-solid fa-face-smile-wink"></i>
+                    <strong>Você!</strong>
+                    <span>Autoestima lá em cima, gostamos disso.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizOption('incredible', 'Ambos compartilhando pizza', 2)">
+                    <i class="fa-solid fa-people-holding"></i>
+                    <strong>Nós dois juntos</strong>
+                    <span>Sensibilidade extrema, romance no ar.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizOption('incredible', 'O inventor da batata frita', 2)">
+                    <i class="fa-solid fa-circle-question"></i>
+                    <strong>O inventor da batata frita</strong>
+                    <span>Um herói incompreendido pela história.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSO 2: Comida -->
+        <div id="step-2" class="quiz-step" style="display: none;">
+            <h1>Pergunta 2</h1>
+            <p class="subtitle">Qual seria o cardápio perfeito para preencher a rota afetiva do estômago?</p>
+
+            <div class="card-grid">
+                <div class="card-option" onclick="selectQuizValue('comida', '{% if invite %}{{ invite.opcao_comida_1 }}{% else %}Pizza (clássica, preferência meia calabresa com borda){% endif %}', 3)">
+                    <i class="fa-solid fa-pizza-slice"></i>
+                    <strong>{% if invite %}{{ invite.opcao_comida_1 }}{% else %}Pizza Clássica{% endif %}</strong>
+                    <span>Opção número um para nutrir a alma.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('comida', '{% if invite %}{{ invite.opcao_comida_2 }}{% else %}Restaurante chique com menu francês que não pronunciamos{% endif %}', 3)">
+                    <i class="fa-solid fa-shrimp"></i>
+                    <strong>{% if invite %}{{ invite.opcao_comida_2 }}{% else %}Lugar Chique{% endif %}</strong>
+                    <span>Para tirar fotos bonitas e simular riqueza.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('comida', '{% if invite %}{{ invite.opcao_comida_3 }}{% else %}Dois dogões completos com duas salsichas e purê no quiosque da esquina{% endif %}', 3)">
+                    <i class="fa-solid fa-hotdog"></i>
+                    <strong>{% if invite %}{{ invite.opcao_comida_3 }}{% else %}Dogão Duplo{% endif %}</strong>
+                    <span>Alta gastronomia de balcão de rua.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('comida', '{% if invite %}{{ invite.opcao_comida_4 }}{% else %}Apenas minha presença luxuosa e um copo de água sem gás{% endif %}', 3)">
+                    <i class="fa-solid fa-glass-water"></i>
+                    <strong>{% if invite %}{{ invite.opcao_comida_4 }}{% else %}Presença Minimalista{% endif %}</strong>
+                    <span>Nutrindo a mente com bons sentimentos.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSO 3: Quem Paga -->
+        <div id="step-3" class="quiz-step" style="display: none;">
+            <h1>Pergunta 3</h1>
+            <p class="subtitle">Qual o regime de financiamento ideal para custear essa operação?</p>
+
+            <div class="card-grid">
+                <div class="card-option" onclick="selectQuizValue('quem_paga', '{% if invite %}{{ invite.opcao_paga_1 }}{% else %}Você (100% financiado por conta própria){% endif %}', 4)">
+                    <i class="fa-solid fa-wallet"></i>
+                    <strong>{% if invite %}{{ invite.opcao_paga_1 }}{% else %}Você Paga Tudo{% endif %}</strong>
+                    <span>Aprovado formalmente pelo PROCON.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('quem_paga', '{% if invite %}{{ invite.opcao_paga_2 }}{% else %}Dividido igualmente em 12 parcelas sem juros{% endif %}', 4)">
+                    <i class="fa-solid fa-calculator"></i>
+                    <strong>{% if invite %}{{ invite.opcao_paga_2 }}{% else %}Dividimos em 12x{% endif %}</strong>
+                    <span>Cooperativa de custeio mútuo e justo.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('quem_paga', '{% if invite %}{{ invite.opcao_paga_3 }}{% else %}Eu pago tudo (resgatando o saldo restante da poupança){% endif %}', 4)">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                    <strong>{% if invite %}{{ invite.opcao_paga_3 }}{% else %}Eu Pago Tudo{% endif %}</strong>
+                    <span>Sujeito ao limite disponível na carteira.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('quem_paga', '{% if invite %}{{ invite.opcao_paga_4 }}{% else %}O último a terminar de comer paga a conta correndo{% endif %}', 4)">
+                    <i class="fa-solid fa-person-running"></i>
+                    <strong>{% if invite %}{{ invite.opcao_paga_4 }}{% else %}Quem comer por último{% endif %}</strong>
+                    <span>Atividade de velocidade e mastigação rápida.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSO 4: Assunto -->
+        <div id="step-4" class="quiz-step" style="display: none;">
+            <h1>Pergunta 4</h1>
+            <p class="subtitle">Qual será a pauta parlamentar e tema de conversa prioritário na mesa?</p>
+
+            <div class="card-grid">
+                <div class="card-option" onclick="selectQuizValue('assunto', '{% if invite %}{{ invite.opcao_assunto_1 }}{% else %}Fofocas profundas sobre pessoas que nenhum de nós conhece{% endif %}', 5)">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <strong>{% if invite %}{{ invite.opcao_assunto_1 }}{% else %}Fofocas Aleatórias{% endif %}</strong>
+                    <span>Julgamento saudável de desconhecidos com precisão.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('assunto', '{% if invite %}{{ invite.opcao_assunto_2 }}{% else %}Teorias conspiratórias absurdas vistas no TikTok depois da meia-noite{% endif %}', 5)">
+                    <i class="fa-solid fa-mask"></i>
+                    <strong>{% if invite %}{{ invite.opcao_assunto_2 }}{% else %}Teorias de Conspiração{% endif %}</strong>
+                    <span>Discutir sobre simulações e governos secretos.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('assunto', '{% if invite %}{{ invite.opcao_assunto_3 }}{% else %}Debate culinário exaustivo sobre por que o Miojo de Tomate da Turma da Mônica supera os outros{% endif %}', 5)">
+                    <i class="fa-solid fa-bowl-food"></i>
+                    <strong>{% if invite %}{{ invite.opcao_assunto_3 }}{% else %}Doutrina Miojo{% endif %}</strong>
+                    <span>Análise científica do miojo de tomate da Mônica.</span>
+                </div>
+                <div class="card-option" onclick="selectQuizValue('assunto', '{% if invite %}{{ invite.opcao_assunto_4 }}{% else %}Planejamento estratégico de partilha de bens sobre o prêmio da Mega Sena acumulada{% endif %}', 5)">
+                    <i class="fa-solid fa-coins"></i>
+                    <strong>{% if invite %}{{ invite.opcao_assunto_4 }}{% else %}Mega-Sena Projetada{% endif %}</strong>
+                    <span>Dividindo bilhões virtuais sem ter o papel da loteria.</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- PASSO 5: CONVITE OU INTIMAÇÃO (Com Botão NÃO que foge) -->
+        <div id="step-5" class="quiz-step" style="display: none;">
+            <h1>Compatibilidade Aprovada!</h1>
+            <p class="subtitle">Você passou na avaliação com pontuação máxima. Diante disso, nos resta uma decisão final...</p>
+
+            <h2 style="font-size: 1.6rem; color: var(--dark-pink); margin-top: 15px;">Quer sair comigo para consolidar esses termos?</h2>
+
+            <div class="gif-container">
+                <i class="fa-solid fa-heart" style="animation: heartBeat 1s infinite; color: var(--dark-pink);"></i>
+            </div>
+
+            <div class="btn-group">
+                <button type="button" class="btn btn-yes" onclick="nextStep(6)">SIM! ♥</button>
+                <button type="button" id="btn-no" class="btn btn-no">NÃO ♡</button>
+            </div>
+        </div>
+
+        <!-- PASSO 6: Form Dados Finais e submissão -->
+        <div id="step-6" class="quiz-step" style="display: none;">
+            <h1>Termos do Cartório Afetivo</h1>
+            <p class="subtitle">Preencha os nomes oficiais, validação jurídica e canal de cobrança para emitir seu Certificado Oficial de Date.</p>
+
+            <div class="form-group-text">
+                <label for="seu_nome">Seu Nome Completo (Quem está respondendo)</label>
+                <input type="text" id="seu_nome" name="seu_nome" class="input-text" placeholder="Ex: Julieta Silva" required disabled>
+            </div>
+
+            <div class="form-group-text">
+                <label for="nome_donzela">Nome de quem Convidou (Dono do link)</label>
+                {% if invite %}
+                <input type="text" id="nome_donzela" name="nome_donzela" class="input-text" value="{{ invite.nome_pretendente }}" readonly>
+                {% else %}
+                <input type="text" id="nome_donzela" name="nome_donzela" class="input-text" placeholder="Ex: Romeu Montes" required disabled>
+                {% endif %}
+            </div>
+
+            <div class="form-group-text">
+                <label for="whatsapp_donzela">Seu WhatsApp (Canal oficial para envio do comprovante de cobrança ou bolo)</label>
+                <span class="form-helper">Seu número receberá cobranças afetivas amigáveis caso você atrase mais de 10 minutos.</span>
+                <input type="tel" id="whatsapp_donzela" name="whatsapp_donzela" class="input-text" placeholder="Ex: (11) 99999-9999" required disabled>
+            </div>
+
+            <div class="form-group-text">
+                <label for="data_hora">Defina Melhor Data e Horário</label>
+                <input type="datetime-local" id="data_hora" name="data_hora" class="input-text" required disabled>
+            </div>
+
+            <button type="submit" class="btn btn-submit">Firmar Contrato e Gerar Certificado!</button>
+        </div>
+
+    </form>
+</div>
+
+<!-- Lógica JavaScript para navegação entre passos e inputs ocultos -->
+<script>
+    function nextStep(stepNum) {
+        // Oculta todos os passos
+        const steps = document.querySelectorAll('.quiz-step');
+        steps.forEach(step => {
+            step.style.display = 'none';
+            step.classList.remove('active');
+        });
+
+        // Exibe o passo solicitado
+        const nextStepEl = document.getElementById('step-' + stepNum);
+        if (nextStepEl) {
+            nextStepEl.style.display = 'block';
+            nextStepEl.classList.add('active');
+        }
+
+        // Habilita inputs do formulário real apenas quando chega no passo 6, para que validadores 'required' do HTML não bloqueiem o início
+        if (stepNum === 6) {
+            document.getElementById('seu_nome').disabled = false;
+            const nomeDonzelaInput = document.getElementById('nome_donzela');
+            if (nomeDonzelaInput && !nomeDonzelaInput.readOnly) {
+                nomeDonzelaInput.disabled = false;
+            }
+            document.getElementById('whatsapp_donzela').disabled = false;
+            document.getElementById('data_hora').disabled = false;
+        }
+    }
+
+    function selectQuizOption(category, value, nextStepNum) {
+        // Avança o passo
+        nextStep(nextStepNum);
+    }
+
+    function selectQuizValue(fieldId, value, nextStepNum) {
+        // Atribui valor selecionado no quizz ao input oculto correspondente
+        const hiddenEl = document.getElementById('hidden_' + fieldId);
+        if (hiddenEl) {
+            hiddenEl.value = value;
+        }
+        // Avança o passo
+        nextStep(nextStepNum);
+    }
+
+    // Configura data/hora mínima no script de carregamento local
+    document.addEventListener('DOMContentLoaded', () => {
+        const dateInput = document.getElementById('data_hora');
+        if (dateInput) {
+            const now = new Date();
+            const year = now.getFullYear();
+            const month = String(now.getMonth() + 1).padStart(2, '0');
+            const day = String(now.getDate()).padStart(2, '0');
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            dateInput.min = `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+    });
+</script>
+{% endblock %}

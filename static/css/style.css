@@ -1,0 +1,530 @@
+/* Estilos Gerais - Tema Romântico Brega Plus */
+:root {
+    --primary-pink: #ff6b8b;
+    --dark-pink: #ff4757;
+    --light-pink: #fff0f3;
+    --cream: #fffcf9;
+    --gold: #d4af37;
+    --dark-violet: #2c3e50;
+    --shadow: rgba(255, 107, 139, 0.25);
+    --glow-shadow: rgba(255, 71, 87, 0.4);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Fredoka', sans-serif;
+    background-color: var(--light-pink);
+    color: #4a4a4a;
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow-x: hidden;
+    position: relative;
+    padding: 40px 0;
+}
+
+/* Partículas de Coração Flutuantes no JS */
+.heart-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 1;
+    overflow: hidden;
+}
+
+.floating-heart {
+    position: absolute;
+    color: var(--primary-pink);
+    font-size: 1.5rem;
+    opacity: 0.6;
+    animation: floatUp 5s linear forwards;
+    pointer-events: none;
+}
+
+@keyframes floatUp {
+    0% {
+        transform: translateY(100vh) rotate(0deg) scale(0.5);
+        opacity: 0;
+    }
+    10% {
+        opacity: 0.8;
+    }
+    90% {
+        opacity: 0.8;
+    }
+    100% {
+        transform: translateY(-10vh) rotate(360deg) scale(1.2);
+        opacity: 0;
+    }
+}
+
+/* Container do App */
+.app-container {
+    width: 95%;
+    max-width: 600px;
+    position: relative;
+    z-index: 10;
+}
+
+/* Card Principal Modernizado e Brilhoso */
+.love-card {
+    background: var(--cream);
+    border: 4px solid var(--primary-pink);
+    border-radius: 30px;
+    padding: 45px 35px;
+    box-shadow: 0 15px 40px var(--shadow), 0 0 20px rgba(255, 107, 139, 0.1);
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.love-card::before {
+    content: "♥ ♥ ♥ ♥";
+    position: absolute;
+    top: 8px;
+    left: 0;
+    right: 0;
+    font-size: 1.4rem;
+    letter-spacing: 8px;
+    opacity: 0.55;
+    color: var(--primary-pink);
+}
+
+/* Títulos */
+h1 {
+    font-family: 'Pacifico', cursive;
+    color: var(--dark-pink);
+    font-size: 2.5rem;
+    margin-bottom: 12px;
+    font-weight: normal;
+    text-shadow: 1px 1px 2px rgba(0,0,0,0.05);
+}
+
+p.subtitle {
+    font-size: 1.1rem;
+    color: #6f6f6f;
+    margin-bottom: 30px;
+    line-height: 1.4;
+}
+
+/* Imagens/Gifs */
+.gif-container {
+    margin: 25px auto;
+    width: 180px;
+    height: 180px;
+    border-radius: 50%;
+    border: 5px solid var(--primary-pink);
+    overflow: hidden;
+    background-color: #fff;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 8px 20px var(--shadow);
+}
+
+.gif-container i {
+    font-size: 6.5rem;
+    color: var(--primary-pink);
+    animation: heartBeat 1.2s infinite;
+}
+
+@keyframes heartBeat {
+    0% { transform: scale(1); }
+    15% { transform: scale(1.15); }
+    30% { transform: scale(1); }
+    45% { transform: scale(1.15); }
+    70% { transform: scale(1); }
+    100% { transform: scale(1); }
+}
+
+/* Botões */
+.btn-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 30px;
+    margin-top: 35px;
+    position: relative;
+    min-height: 80px;
+}
+
+.btn {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.25rem;
+    font-weight: bold;
+    padding: 14px 40px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+
+.btn-yes {
+    background-color: #2ecc71;
+    color: white;
+    box-shadow: 0 6px 20px rgba(46, 204, 113, 0.3);
+}
+
+.btn-yes:hover {
+    background-color: #27ae60;
+    transform: scale(1.1);
+    box-shadow: 0 8px 25px rgba(46, 204, 113, 0.5);
+}
+
+/* Botão NÃO evasivo */
+.btn-no {
+    background-color: var(--dark-pink);
+    color: white;
+    z-index: 100;
+}
+
+.btn-no.evade {
+    position: fixed;
+    transition: all 0.12s ease-out;
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.4);
+}
+
+/* Text inputs (Nomes/WhatsApp) */
+.love-form {
+    text-align: left;
+    margin-top: 15px;
+}
+
+.form-group-text {
+    margin-bottom: 25px;
+}
+
+.form-group-text label {
+    display: block;
+    font-weight: bold;
+    color: var(--dark-pink);
+    margin-bottom: 8px;
+    font-size: 1.15rem;
+}
+
+.form-helper {
+    font-size: 0.85rem;
+    color: #888;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.input-text {
+    width: 100%;
+    padding: 14px 18px;
+    border: 2px solid #ffccd5;
+    border-radius: 15px;
+    font-family: 'Fredoka', sans-serif;
+    font-size: 1.05rem;
+    outline: none;
+    transition: all 0.2s;
+    background-color: #fff;
+}
+
+.input-text:focus {
+    border-color: var(--dark-pink);
+    box-shadow: 0 0 10px rgba(255, 71, 87, 0.15);
+}
+
+/* Grid de Cards interativos para Seleção */
+.form-group-cards {
+    margin-bottom: 30px;
+}
+
+.form-group-cards label.group-title {
+    display: block;
+    font-weight: bold;
+    color: var(--dark-pink);
+    margin-bottom: 12px;
+    font-size: 1.25rem;
+}
+
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+}
+
+/* Esconder inputs radio padrão */
+.card-radio {
+    display: none !important;
+}
+
+/* O card customizado */
+.card-option {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #ffffff;
+    border: 3px solid #ffccd5;
+    border-radius: 18px;
+    padding: 20px 15px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.25s ease;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.03);
+}
+
+.card-option i {
+    font-size: 2.2rem;
+    color: var(--primary-pink);
+    margin-bottom: 10px;
+    transition: transform 0.2s ease;
+}
+
+.card-option strong {
+    font-size: 1rem;
+    display: block;
+    margin-bottom: 4px;
+    color: #333;
+}
+
+.card-option span {
+    font-size: 0.8rem;
+    color: #888;
+    line-height: 1.2;
+}
+
+/* Efeitos Hover nos cards */
+.card-option:hover {
+    transform: translateY(-4px);
+    border-color: var(--primary-pink);
+    box-shadow: 0 6px 15px rgba(255, 107, 139, 0.15);
+}
+
+.card-option:hover i {
+    transform: scale(1.15);
+}
+
+/* Selecionado */
+.card-radio:checked + .card-option {
+    border-color: var(--dark-pink);
+    background-color: #fff2f4;
+    box-shadow: 0 8px 20px rgba(255, 71, 87, 0.2);
+    transform: scale(1.02);
+}
+
+.card-radio:checked + .card-option i {
+    color: var(--dark-pink);
+    animation: heartBeat 1.2s infinite;
+}
+
+.card-radio:checked + .card-option strong {
+    color: var(--dark-pink);
+}
+
+/* Botão Submit */
+.btn-submit {
+    background-color: var(--primary-pink);
+    color: white;
+    width: 100%;
+    margin-top: 25px;
+    font-size: 1.35rem;
+    padding: 16px;
+    border-radius: 50px;
+    box-shadow: 0 8px 25px var(--glow-shadow);
+}
+
+.btn-submit:hover {
+    background-color: var(--dark-pink);
+    transform: translateY(-3px) scale(1.01);
+    box-shadow: 0 10px 30px var(--glow-shadow);
+}
+
+/* Certificado com visual oficial e luxuoso */
+.certificate {
+    border: 15px double var(--gold);
+    background-color: #fffdf8;
+    padding: 40px 30px;
+    position: relative;
+    border-radius: 12px;
+    box-shadow: inset 0 0 40px rgba(212, 175, 55, 0.15);
+    background-image: radial-gradient(rgba(212, 175, 55, 0.05) 1px, transparent 0);
+    background-size: 24px 24px;
+}
+
+.certificate::after {
+    content: "";
+    position: absolute;
+    top: 5px; left: 5px; right: 5px; bottom: 5px;
+    border: 2px solid var(--gold);
+    pointer-events: none;
+}
+
+.certificate-header h2 {
+    font-family: 'Pacifico', cursive;
+    color: var(--gold);
+    font-size: 2.4rem;
+    margin-bottom: 2px;
+    text-shadow: 1px 1px 1px rgba(0,0,0,0.05);
+}
+
+.certificate-header p {
+    font-family: 'Playfair Display', serif;
+    font-style: italic;
+    color: #666;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.certificate-seal {
+    font-size: 3.5rem;
+    color: var(--gold);
+    margin: 20px 0;
+    display: inline-block;
+    filter: drop-shadow(0 4px 6px rgba(212,175,55,0.2));
+}
+
+.certificate-body {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.15rem;
+    line-height: 1.8;
+    margin: 25px 0;
+    text-align: justify;
+    color: #2c3e50;
+}
+
+.certificate-body strong {
+    color: var(--dark-pink);
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 600;
+}
+
+.certificate-body em {
+    font-weight: bold;
+    color: #444;
+}
+
+.certificate-signatures {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 55px;
+    padding-top: 20px;
+}
+
+.signature-line {
+    text-align: center;
+    width: 45%;
+}
+
+.signature-font {
+    font-family: 'Alex Brush', cursive;
+    font-size: 2.2rem;
+    border-bottom: 2px solid #7f8c8d;
+    min-height: 50px;
+    line-height: 1.1;
+    color: #1b263b;
+    padding-bottom: 5px;
+}
+
+.donzela-sig {
+    font-style: italic;
+    font-size: 1rem;
+    color: #7f8c8d;
+    border-bottom: 2px solid #7f8c8d;
+    min-height: 50px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.signature-title {
+    font-family: 'Fredoka', sans-serif;
+    font-size: 0.85rem;
+    color: #555;
+    margin-top: 8px;
+    font-weight: bold;
+}
+
+.btn-action-group {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    margin-top: 35px;
+}
+
+.btn-print {
+    background-color: var(--gold);
+    color: white;
+    box-shadow: 0 6px 20px rgba(212, 175, 55, 0.3);
+}
+
+.btn-print:hover {
+    background-color: #b89326;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 25px rgba(212, 175, 55, 0.55);
+}
+
+.btn-back {
+    background-color: #7f8c8d;
+    color: white;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-back:hover {
+    background-color: #626f70;
+    transform: translateY(-2px);
+}
+
+/* Responsividade */
+@media(max-width: 480px) {
+    .card-grid {
+        grid-template-columns: 1fr;
+    }
+    .love-card {
+        padding: 30px 20px;
+    }
+    .certificate-signatures {
+        flex-direction: column;
+        align-items: center;
+        gap: 30px;
+    }
+    .signature-line {
+        width: 80%;
+    }
+}
+
+/* Media Query para Impressão do Certificado */
+@media print {
+    body {
+        background-color: white;
+        padding: 0;
+        margin: 0;
+    }
+    .heart-container, .btn-action-group, .love-card::before {
+        display: none !important;
+    }
+    .app-container {
+        width: 100%;
+        max-width: 100%;
+        padding: 0;
+    }
+    .love-card {
+        border: none;
+        box-shadow: none;
+        padding: 0;
+        background-color: transparent;
+    }
+    .certificate {
+        border: 15px double var(--gold);
+        box-shadow: none;
+        padding: 40px;
+        page-break-inside: avoid;
+    }
+}

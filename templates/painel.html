@@ -1,0 +1,325 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="love-card" style="max-width: 900px; width: 100%;">
+    <div style="display: flex; justify-content: flex-end; margin-top: -15px; margin-bottom: 15px;">
+        <a href="{{ url_for('logout') }}" class="btn" style="background-color: var(--dark-pink); color: white; padding: 6px 15px; font-size: 0.85rem; text-decoration: none; border-radius: 20px; font-weight: bold; display: inline-flex; align-items: center; gap: 5px; border: none; cursor: pointer;">
+            <i class="fa-solid fa-right-from-bracket"></i> Sair do Painel
+        </a>
+    </div>
+    <h1>Painel de Controle do Cupido</h1>
+    <p class="subtitle">Gerenciador de Contratos, Compromissos e Links Personalizados</p>
+
+    <!-- Estatísticas Gerais -->
+    <div style="display: flex; justify-content: space-around; gap: 15px; margin-bottom: 35px; flex-wrap: wrap;">
+        <div style="background: white; border: 2px solid var(--primary-pink); border-radius: 15px; padding: 15px; flex: 1; min-width: 130px; box-shadow: 0 4px 6px var(--shadow);">
+            <div style="font-size: 2rem; color: var(--primary-pink); font-weight: bold;">{{ total_dates }}</div>
+            <div style="font-size: 0.85rem; color: #666; font-weight: bold; text-transform: uppercase;">Total de Dates</div>
+        </div>
+        <div style="background: white; border: 2px solid #2ecc71; border-radius: 15px; padding: 15px; flex: 1; min-width: 130px; box-shadow: 0 4px 6px rgba(46,204,113,0.15);">
+            <div style="font-size: 2rem; color: #2ecc71; font-weight: bold;">{{ confirmados }}</div>
+            <div style="font-size: 0.85rem; color: #666; font-weight: bold; text-transform: uppercase;">Confirmados</div>
+        </div>
+        <div style="background: white; border: 2px solid var(--gold); border-radius: 15px; padding: 15px; flex: 1; min-width: 130px; box-shadow: 0 4px 6px rgba(243,156,18,0.15);">
+            <div style="font-size: 2rem; color: var(--gold); font-weight: bold;">{{ pendentes }}</div>
+            <div style="font-size: 0.85rem; color: #666; font-weight: bold; text-transform: uppercase;">Pendentes</div>
+        </div>
+        <div style="background: white; border: 2px solid var(--dark-pink); border-radius: 15px; padding: 15px; flex: 1; min-width: 130px; box-shadow: 0 4px 6px rgba(255,71,87,0.15);">
+            <div style="font-size: 2rem; color: var(--dark-pink); font-weight: bold;">{{ recusados }}</div>
+            <div style="font-size: 0.85rem; color: #666; font-weight: bold; text-transform: uppercase;">Recusados</div>
+        </div>
+    </div>
+
+    <!-- Alert do Novo Link Criado -->
+    {% if novo_link %}
+    <div style="background: #fff0f3; border: 2px dashed var(--primary-pink); border-radius: 15px; padding: 20px; margin-bottom: 30px; text-align: center; box-shadow: 0 4px 10px rgba(255,107,129,0.15);">
+        <h3 style="color: var(--dark-pink); margin-bottom: 10px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Convite Personalizado Gerado!</h3>
+        <p style="font-size: 0.9rem; color: #555; margin-bottom: 15px;">Envie o link abaixo para a sua donzela ou parceiro(a):</p>
+        <div style="display: flex; gap: 10px; max-width: 600px; margin: 0 auto; flex-wrap: wrap;">
+            <input type="text" id="generated-link-input" value="{{ novo_link }}" readonly style="flex: 1; min-width: 250px; padding: 10px; border: 1.5px solid var(--primary-pink); border-radius: 8px; font-size: 0.9rem; outline: none; background: #fff;" onclick="this.select()">
+            <button onclick="copiarLinkGerado()" class="btn btn-yes" style="padding: 10px 20px; font-size: 0.9rem; font-weight: bold;">Copiar Link</button>
+        </div>
+        <span id="copy-message" style="display: block; font-size: 0.8rem; color: #2ecc71; margin-top: 8px; font-weight: bold; height: 18px;"></span>
+    </div>
+    {% endif %}
+
+    <!-- Container Abas -->
+    <div style="display: flex; gap: 10px; border-bottom: 2px solid var(--light-pink); margin-bottom: 20px;">
+        <button onclick="switchTab('dates-tab', this)" class="tab-btn active-tab" style="background: none; border: none; padding: 10px 20px; font-size: 1.1rem; color: var(--dark-pink); font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer; border-bottom: 3px solid var(--primary-pink); position: relative; bottom: -2px;">
+            <i class="fa-solid fa-calendar-heart"></i> Dates Agendados
+        </button>
+        <button onclick="switchTab('invitations-tab', this)" class="tab-btn" style="background: none; border: none; padding: 10px 20px; font-size: 1.1rem; color: #888; font-family: 'Fredoka', sans-serif; font-weight: bold; cursor: pointer; border-bottom: 3px solid transparent; position: relative; bottom: -2px;">
+            <i class="fa-solid fa-link"></i> Meus Convites
+        </button>
+    </div>
+
+    <!-- ABA 1: LISTA DE DATES -->
+    <div id="dates-tab" class="tab-content">
+        <h2>Dates Registrados</h2>
+        <div style="background: white; border: 2px solid var(--primary-pink); border-radius: 20px; overflow-x: auto; margin-bottom: 25px; box-shadow: inset 0 0 10px rgba(0,0,0,0.02);">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                <thead>
+                    <tr style="background-color: var(--light-pink); border-bottom: 2px solid var(--primary-pink); color: var(--dark-pink); font-weight: bold;">
+                        <th style="padding: 15px 12px; width: 60px;">ID</th>
+                        <th style="padding: 15px 12px;">Contraentes</th>
+                        <th style="padding: 15px 12px;">Data Pactuada</th>
+                        <th style="padding: 15px 12px;">Acordo</th>
+                        <th style="padding: 15px 12px;">Contato</th>
+                        <th style="padding: 15px 12px; width: 140px;">Status</th>
+                        <th style="padding: 15px 12px; width: 100px; text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if not dates %}
+                    <tr>
+                        <td colspan="7" style="padding: 40px; text-align: center; color: #999; font-style: italic;">
+                            Nenhum contrato de date foi registrado ainda no cartório.
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% for date in dates %}
+                    <tr style="border-bottom: 1px solid #ffccd5; transition: background 0.2s;">
+                        <td style="padding: 15px 12px; color: #999; font-weight: bold;">
+                            #{{ date.id }}
+                            {% if date.invitation_id %}
+                            <div style="font-size: 0.70rem; color: var(--primary-pink); font-weight: normal;">(Convite #{{ date.invitation_id }})</div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 15px 12px; line-height: 1.3;">
+                            <strong style="color: var(--dark-pink); font-size: 0.95rem;">{{ date.seu_nome }}</strong>
+                            <div style="font-size: 0.8rem; color: #888;">Para: {{ date.nome_donzela }}</div>
+                        </td>
+                        <td style="padding: 15px 12px; font-size: 0.85rem; font-weight: bold; color: #333;">
+                            {{ date.data_hora }}
+                        </td>
+                        <td style="padding: 15px 12px; font-size: 0.8rem; color: #555; line-height: 1.3;">
+                            <div>Financia: <em>{{ date.quem_paga.split(' ')[0] }}</em></div>
+                            <div>Menu: <em>{{ date.comida.split(' ')[0] }}</em></div>
+                            <div>Pauta: <em>{{ date.assunto.split(' ')[0] }}</em></div>
+                        </td>
+                        <td style="padding: 15px 12px; font-size: 0.85rem;">
+                            <span style="color: #4a4a4a; display: block;">{{ date.whatsapp_donzela }}</span>
+                            <a href="https://wa.me/{{ date.whatsapp_donzela|replace('(', '')|replace(')', '')|replace('-', '')|replace(' ', '') }}"
+                               target="_blank"
+                               style="color: #2ecc71; font-weight: bold; font-size: 0.75rem; text-decoration: none; display: inline-flex; align-items: center; gap: 3px; margin-top: 3px;">
+                                <i class="fa-brands fa-whatsapp"></i> Cobrar
+                            </a>
+                        </td>
+                        <td style="padding: 15px 12px;">
+                            {% if date.status == 'Confirmado' %}
+                            <span style="background-color: #e8f8f0; color: #2ecc71; padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; display: inline-block; border: 1.5px solid #2ecc71;">Confirmado</span>
+                            {% elif date.status == 'Recusado' %}
+                            <span style="background-color: #fde8eb; color: var(--dark-pink); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; display: inline-block; border: 1.5px solid var(--dark-pink);">Recusado</span>
+                            {% else %}
+                            <span style="background-color: #fef5e7; color: var(--gold); padding: 4px 8px; border-radius: 8px; font-size: 0.8rem; font-weight: bold; display: inline-block; border: 1.5px solid var(--gold);">Pendente</span>
+                            {% endif %}
+
+                            <form action="{{ url_for('alterar_status', date_id=date.id) }}" method="POST" style="margin-top: 8px; display: flex; gap: 4px;">
+                                <select name="status" onchange="this.form.submit()" style="font-size: 0.75rem; padding: 2px 4px; border: 1px solid #ccc; border-radius: 6px; outline: none; background: #fafafa; cursor: pointer;">
+                                    <option value="" disabled selected>Alterar...</option>
+                                    <option value="Pendente">Pendente</option>
+                                    <option value="Confirmado">Confirmado</option>
+                                    <option value="Recusado">Recusado</option>
+                                </select>
+                            </form>
+                        </td>
+                        <td style="padding: 15px 12px; text-align: center;">
+                            <form action="{{ url_for('excluir_date', date_id=date.id) }}" method="POST" onsubmit="return confirm('Deseja realmente arquivar este contrato?')">
+                                <button type="submit" style="background: none; border: none; color: #a1a1a1; cursor: pointer; font-size: 1.1rem; transition: color 0.2s;" onmouseover="this.style.color='var(--dark-pink)'" onmouseout="this.style.color='#a1a1a1'">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- ABA 2: PERSONALIZAR CONVITES -->
+    <div id="invitations-tab" class="tab-content" style="display: none;">
+        <h2 style="color: var(--dark-pink); margin-bottom: 20px;">Gerenciador de Convites Personalizados</h2>
+
+        <!-- Form para criar convite -->
+        <div style="background: #fff5f7; border: 2px solid var(--primary-pink); border-radius: 20px; padding: 25px; margin-bottom: 30px; box-shadow: 0 4px 10px rgba(0,0,0,0.03);">
+            <h3 style="color: var(--dark-pink); border-bottom: 1.5px solid var(--light-pink); padding-bottom: 10px; margin-bottom: 20px;">
+                <i class="fa-solid fa-heart-circle-plus"></i> Personalizar Novo Quiz de Convite
+            </h3>
+
+            <form action="{{ url_for('criar_convite') }}" method="POST">
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; color: #555;">Seu Nome (Quem vai convidar):</label>
+                        <input type="text" name="nome_pretendente" placeholder="Ex: Romeu" required style="width: 100%; padding: 10px; border: 1.5px solid #ffccd5; border-radius: 8px; font-size: 0.9rem; outline: none; background: white;" onfocus="this.style.borderColor='var(--primary-pink)'" onblur="this.style.borderColor='#ffccd5'">
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; color: #555;">Seu WhatsApp (Opcional):</label>
+                        <input type="tel" name="whatsapp_pretendente" placeholder="Ex: (11) 99999-9999" style="width: 100%; padding: 10px; border: 1.5px solid #ffccd5; border-radius: 8px; font-size: 0.9rem; outline: none; background: white;" onfocus="this.style.borderColor='var(--primary-pink)'" onblur="this.style.borderColor='#ffccd5'">
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 15px; margin-bottom: 20px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; color: #555;">Título do Convite (Boas-vindas):</label>
+                        <input type="text" name="titulo" value="Você recebeu um convite especial" required style="width: 100%; padding: 10px; border: 1.5px solid #ffccd5; border-radius: 8px; font-size: 0.9rem; outline: none; background: white;">
+                    </div>
+                    <div style="flex: 1; min-width: 250px;">
+                        <label style="display: block; font-weight: bold; font-size: 0.9rem; margin-bottom: 6px; color: #555;">Subtítulo (Mensagem de Impacto):</label>
+                        <input type="text" name="subtitulo" value="Mas antes de descobrir, precisamos validar sua compatibilidade emocional..." required style="width: 100%; padding: 10px; border: 1.5px solid #ffccd5; border-radius: 8px; font-size: 0.9rem; outline: none; background: white;">
+                    </div>
+                </div>
+
+                <!-- Custom Options Cards -->
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 15px; margin-bottom: 25px;">
+                    <!-- Comida -->
+                    <div style="background: white; border: 1.5px solid var(--primary-pink); border-radius: 12px; padding: 15px;">
+                        <h4 style="color: var(--dark-pink); margin-bottom: 12px; border-bottom: 1px solid var(--light-pink); padding-bottom: 6px;"><i class="fa-solid fa-pizza-slice"></i> Opções de Comida:</h4>
+                        <input type="text" name="opcao_comida_1" value="Pizza (clássica, preferência meia calabresa com borda)" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_comida_2" value="Restaurante chique com menu francês" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_comida_3" value="Dois dogões completos no quiosque da esquina" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_comida_4" value="Apenas minha presença luxuosa e um copo d'água" required style="width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                    </div>
+
+                    <!-- Quem Paga -->
+                    <div style="background: white; border: 1.5px solid var(--primary-pink); border-radius: 12px; padding: 15px;">
+                        <h4 style="color: var(--dark-pink); margin-bottom: 12px; border-bottom: 1px solid var(--light-pink); padding-bottom: 6px;"><i class="fa-solid fa-wallet"></i> Opções de Pagamento:</h4>
+                        <input type="text" name="opcao_paga_1" value="Você (100% financiado por conta própria)" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_paga_2" value="Dividido igualmente em 12 parcelas sem juros" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_paga_3" value="Eu pago tudo (resgatando o saldo da poupança)" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_paga_4" value="O último a terminar de comer paga a conta correndo" required style="width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                    </div>
+
+                    <!-- Assunto -->
+                    <div style="background: white; border: 1.5px solid var(--primary-pink); border-radius: 12px; padding: 15px;">
+                        <h4 style="color: var(--dark-pink); margin-bottom: 12px; border-bottom: 1px solid var(--light-pink); padding-bottom: 6px;"><i class="fa-solid fa-bullhorn"></i> Opções de Assuntos:</h4>
+                        <input type="text" name="opcao_assunto_1" value="Fofocas profundas sobre pessoas aleatórias" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_assunto_2" value="Teorias conspiratórias absurdas vistas no TikTok" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_assunto_3" value="Debate culinário sobre por que Miojo de Tomate supera outros" required style="margin-bottom: 8px; width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                        <input type="text" name="opcao_assunto_4" value="Planejamento partilha bens do prêmio Mega Sena acumulada" required style="width: 100%; padding: 8px; border: 1px solid #ffd1dc; border-radius: 6px; font-size: 0.85rem;">
+                    </div>
+                </div>
+
+                <div style="text-align: center;">
+                    <button type="submit" class="btn btn-submit" style="width: auto; padding: 12px 30px; font-size: 1rem;"><i class="fa-solid fa-wand-magic-sparkles"></i> Gerar Link de Convite</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- Lista de Convites criados -->
+        <h3 style="color: var(--dark-pink); margin-bottom: 15px;">Links de Convites Criados</h3>
+        <div style="background: white; border: 2px solid var(--primary-pink); border-radius: 20px; overflow-x: auto; box-shadow: inset 0 0 10px rgba(0,0,0,0.02);">
+            <table style="width: 100%; border-collapse: collapse; text-align: left; font-size: 0.95rem;">
+                <thead>
+                    <tr style="background-color: var(--light-pink); border-bottom: 2px solid var(--primary-pink); color: var(--dark-pink); font-weight: bold;">
+                        <th style="padding: 15px 12px; width: 60px;">ID</th>
+                        <th style="padding: 15px 12px;">Pretendente</th>
+                        <th style="padding: 15px 12px;">Boas-vindas / Título</th>
+                        <th style="padding: 15px 12px;">Link de Acesso</th>
+                        <th style="padding: 15px 12px; width: 100px; text-align: center;">Ações</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if not invites %}
+                    <tr>
+                        <td colspan="5" style="padding: 30px; text-align: center; color: #999; font-style: italic;">
+                            Nenhum convite personalizado foi gerado ainda. Use o formulário acima!
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% for invite in invites %}
+                    <tr style="border-bottom: 1px solid #ffccd5;">
+                        <td style="padding: 15px 12px; color: #999; font-weight: bold;">#{{ invite.id }}</td>
+                        <td style="padding: 15px 12px; font-weight: bold; color: var(--dark-pink);">
+                            {{ invite.nome_pretendente }}
+                            {% if invite.whatsapp_pretendente %}
+                            <div style="font-size: 0.75rem; color: #666; font-weight: normal;">{{ invite.whatsapp_pretendente }}</div>
+                            {% endif %}
+                        </td>
+                        <td style="padding: 15px 12px; font-size: 0.85rem; color: #555;">
+                            <strong>{{ invite.titulo }}</strong>
+                            <div style="font-size: 0.75rem; color: #888;">{{ invite.subtitulo }}</div>
+                        </td>
+                        <td style="padding: 15px 12px; font-size: 0.85rem;">
+                            {% set link = url_for('convite', invite_id=invite.id, _external=True) %}
+                            <a href="{{ link }}" target="_blank" style="color: var(--primary-pink); text-decoration: none; font-weight: bold; overflow-wrap: anywhere; display: block; margin-bottom: 4px;">
+                                {{ link }}
+                            </a>
+                            <button onclick="copiarTexto('{{ link }}', this)" class="btn btn-yes" style="padding: 3px 8px; font-size: 0.7rem; border-radius: 4px; float: none; display: inline-block;">Copiar Link</button>
+                        </td>
+                        <td style="padding: 15px 12px; text-align: center;">
+                            <form action="{{ url_for('excluir_convite', invite_id=invite.id) }}" method="POST" onsubmit="return confirm('Excluir este convite personalizado? As estatísticas/dates vinculados continuarão gravados.')">
+                                <button type="submit" style="background: none; border: none; color: #a1a1a1; cursor: pointer; font-size: 1.1rem; transition: color 0.2s;" onmouseover="this.style.color='var(--dark-pink)'" onmouseout="this.style.color='#a1a1a1'">
+                                    <i class="fa-regular fa-trash-can"></i>
+                                </button>
+                            </form>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Navegação -->
+    <div style="display: flex; justify-content: center; gap: 15px; margin-top: 25px;">
+        <a href="{{ url_for('index') }}" class="btn btn-back">
+            <i class="fa-solid fa-home" style="margin-right: 8px;"></i> para Tela Principal
+        </a>
+    </div>
+</div>
+
+<script>
+    // Gerenciador de Abas do Painel
+    function switchTab(tabId, el) {
+        // Remove classes ativas de todas as abas
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.classList.remove('active-tab');
+            btn.style.color = '#888';
+            btn.style.borderBottomColor = 'transparent';
+        });
+
+        // Ativa o botão da aba selecionada
+        el.classList.add('active-tab');
+        el.style.color = 'var(--dark-pink)';
+        el.style.borderBottomColor = 'var(--primary-pink)';
+
+        // Esconde todos os conteúdos
+        document.querySelectorAll('.tab-content').forEach(content => {
+            content.style.display = 'none';
+        });
+
+        // Exibe o conteúdo selecionado
+        document.getElementById(tabId).style.display = 'block';
+    }
+
+    // Copiar link gerado no alerta de sucesso
+    function copiarLinkGerado() {
+        const input = document.getElementById('generated-link-input');
+        if (input) {
+            input.select();
+            document.execCommand('copy');
+            const msgSpan = document.getElementById('copy-message');
+            msgSpan.innerText = '♥ Link copiado com sucesso! Hora de flertar.';
+            setTimeout(() => {
+                msgSpan.innerText = '';
+            }, 3000);
+        }
+    }
+
+    // Copiar link genérico de tabela
+    function copiarTexto(texto, btn) {
+        navigator.clipboard.writeText(texto).then(() => {
+            const originalText = btn.innerText;
+            btn.innerText = 'Copiado!';
+            btn.style.backgroundColor = '#2ecc71';
+            setTimeout(() => {
+                btn.innerText = originalText;
+                btn.style.backgroundColor = 'var(--primary-pink)';
+            }, 2000);
+        }).catch(err => {
+            console.error('Erro ao copiar link: ', err);
+        });
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="love-card">
+    <h1>Cartório Afetivo</h1>
+    <p class="subtitle">Identifique-se para acessar o painel de controle do Cupido.</p>
+
+    <div class="gif-container">
+        <i class="fa-solid fa-lock" style="font-size: 5.5rem; color: var(--primary-pink); z-index: 10; position: relative; display: flex; align-items: center; justify-content: center; height: 100%;"></i>
+    </div>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        <div style="background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; padding: 12px; border-radius: 12px; margin-bottom: 20px; font-size: 0.95rem; text-align: center;">
+          {% for category, message in messages %}
+            <div>{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('login') }}" method="POST" class="love-form">
+        <div class="form-group-text">
+            <label for="username">Usuário</label>
+            <input type="text" id="username" name="username" class="input-text" placeholder="Digite o usuário" required>
+        </div>
+
+        <div class="form-group-text">
+            <label for="password">Senha</label>
+            <input type="password" id="password" name="password" class="input-text" placeholder="Digite a senha" required>
+        </div>
+
+        <button type="submit" class="btn btn-submit">Entrar no Cartório</button>
+    </form>
+</div>
+{% endblock %}

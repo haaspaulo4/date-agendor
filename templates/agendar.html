@@ -1,0 +1,168 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="love-card">
+    <h1>Contrato de Date</h1>
+    <p class="subtitle">Insira as informações das partes interessadas e selecione os termos contratuais. O não preenchimento implica atraso no amor.</p>
+
+    <form class="love-form" action="{{ url_for('certificado') }}" method="POST">
+
+        <!-- Identificação dos Contatantes -->
+        <h2 style="font-size: 1.3rem; color: var(--dark-pink); margin-bottom: 15px; border-bottom: 2px dashed #ffccd5; padding-bottom: 8px;">
+            <i class="fa-solid fa-users"></i> Identificação dos Contraentes
+        </h2>
+
+        <div class="form-group-text">
+            <label for="seu_nome">Seu Nome Completo (ou apelido carinhoso)</label>
+            <input type="text" id="seu_nome" name="seu_nome" class="input-text" placeholder="Ex: Romeu Apaixonado" required>
+        </div>
+
+        <div class="form-group-text">
+            <label for="nome_donzela">Nome da Donzela / Alvo do Date</label>
+            <input type="text" id="nome_donzela" name="nome_donzela" class="input-text" placeholder="Ex: Julieta da Silva" required>
+        </div>
+
+        <div class="form-group-text">
+            <label for="whatsapp_donzela">WhatsApp da Donzela (Canal de Cobrança em caso de bolo)</label>
+            <span class="form-helper">Inexistência de contato impede envio de lembretes e notificações de atraso.</span>
+            <input type="tel" id="whatsapp_donzela" name="whatsapp_donzela" class="input-text" placeholder="Ex: (11) 99999-9999" required>
+        </div>
+
+        <!-- Agendamento Cronológico -->
+        <h2 style="font-size: 1.3rem; color: var(--dark-pink); margin: 30px 0 15px; border-bottom: 2px dashed #ffccd5; padding-bottom: 8px;">
+            <i class="fa-regular fa-calendar-days"></i> Data e Horário
+        </h2>
+        <div class="form-group-text">
+            <label for="data_hora">Definição do Dia e Hora da Execução</label>
+            <input type="datetime-local" id="data_hora" name="data_hora" class="input-text" required>
+        </div>
+
+        <!-- Termos Contratuais em Cards -->
+        <h2 style="font-size: 1.3rem; color: var(--dark-pink); margin: 35px 0 15px; border-bottom: 2px dashed #ffccd5; padding-bottom: 8px;">
+            <i class="fa-solid fa-file-contract"></i> Cláusulas Contratuais
+        </h2>
+
+        <!-- Financiamento -->
+        <div class="form-group-cards">
+            <label class="group-title">Financiamento do Date (Quem Paga?)</label>
+            <div class="card-grid">
+
+                <input type="radio" id="paga-voce" name="quem_paga" value="Você (100% financiado por conta própria)" class="card-radio" checked>
+                <label for="paga-voce" class="card-option">
+                    <i class="fa-solid fa-wallet"></i>
+                    <strong>Você Paga</strong>
+                    <span>Regime recomendado e aprovado pelo PROCON.</span>
+                </label>
+
+                <input type="radio" id="paga-meio" name="quem_paga" value="Dividido igualmente em 12 parcelas sem juros" class="card-radio">
+                <label for="paga-meio" class="card-option">
+                    <i class="fa-solid fa-calculator"></i>
+                    <strong>Dividimos</strong>
+                    <span>Custeio cooperativo meio a meio na maquininha.</span>
+                </label>
+
+                <input type="radio" id="paga-eu" name="quem_paga" value="Eu pago tudo (resgatando saldo restante da poupança)" class="card-radio">
+                <label for="paga-eu" class="card-option">
+                    <i class="fa-solid fa-piggy-bank"></i>
+                    <strong>Eu Pago</strong>
+                    <span>Sujeito a limite disponível do meu cartão.</span>
+                </label>
+
+                <input type="radio" id="paga-corrida" name="quem_paga" value="O último a terminar de comer paga a conta correndo" class="card-radio">
+                <label for="paga-corrida" class="card-option">
+                    <i class="fa-solid fa-person-running"></i>
+                    <strong>Último que comer</strong>
+                    <span>Quem terminar de mastigar por último assume 100%.</span>
+                </label>
+
+            </div>
+        </div>
+
+        <!-- Menu da Alimentação -->
+        <div class="form-group-cards">
+            <label class="group-title">Menu Culinário Oficial</label>
+            <div class="card-grid">
+
+                <input type="radio" id="food-pizza" name="comida" value="Pizza (clássica, de preferência meia calabresa com borda)" class="card-radio" checked>
+                <label for="food-pizza" class="card-option">
+                    <i class="fa-solid fa-pizza-slice"></i>
+                    <strong>Pizza Clássica</strong>
+                    <span>Aposta segura e deliciosa sem riscos.</span>
+                </label>
+
+                <input type="radio" id="food-chique" name="comida" value="Restaurante chique com menu em francês que não pronunciamos" class="card-radio">
+                <label for="food-chique" class="card-option">
+                    <i class="fa-solid fa-shrimp"></i>
+                    <strong>Lugar Chique</strong>
+                    <span>Para tirar fotos bonitas e simular riqueza.</span>
+                </label>
+
+                <input type="radio" id="food-dogao" name="comida" value="Dois dogões completos com duas salsichas e purê do quiosque da esquina" class="card-radio">
+                <label for="food-dogao" class="card-option">
+                    <i class="fa-solid fa-hotdog"></i>
+                    <strong>Dogão Duplo</strong>
+                    <span>Alta gastronomia da rua da esquina.</span>
+                </label>
+
+                <input type="radio" id="food-agua" name="comida" value="Apenas a minha presença luxuosa e um copo de água sem gás" class="card-radio">
+                <label for="food-agua" class="card-option">
+                    <i class="fa-solid fa-glass-water"></i>
+                    <strong>Apenas Minha Presença</strong>
+                    <span>Alimentando a alma de sentimentos puros.</span>
+                </label>
+
+            </div>
+        </div>
+
+        <!-- Assuntos em Discussão -->
+        <div class="form-group-cards">
+            <label class="group-title">Tópico de Ata Obrigatório (Conversa)</label>
+            <div class="card-grid">
+
+                <input type="radio" id="talk-fofoca" name="assunto" value="Fofocas profundas de pessoas que nenhum de nós conhece" class="card-radio" checked>
+                <label for="talk-fofoca" class="card-option">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    <strong>Fofocas Aleatórias</strong>
+                    <span>Falar mal de desconhecidos com propriedade.</span>
+                </label>
+
+                <input type="radio" id="talk-teoria" name="assunto" value="Teorias conspiratórias absurdas vistas no TikTok depois da meia-noite" class="card-radio">
+                <label for="talk-teoria" class="card-option">
+                    <i class="fa-solid fa-mask"></i>
+                    <strong>Teorias Malucas</strong>
+                    <span>Aliens, simulação e conspirações governamentais.</span>
+                </label>
+
+                <input type="radio" id="talk-miojo" name="assunto" value="Debate culinário exaustivo sobre por que o Miojo de Tomate da Turma da Mônica supera os outros" class="card-radio">
+                <label for="talk-miojo" class="card-option">
+                    <i class="fa-solid fa-bowl-food"></i>
+                    <strong>Filosofia do Miojo</strong>
+                    <span>Análise técnica culinária sobre marcas.</span>
+                </label>
+
+                <input type="radio" id="talk-mega" name="assunto" value="Planejamento estratégico de partilha de bens sobre o prêmio da Mega Sena acumulada" class="card-radio">
+                <label for="talk-mega" class="card-option">
+                    <i class="fa-solid fa-coins"></i>
+                    <strong>Planos Mega-Sena</strong>
+                    <span>Como gastar bilhões projetados sem ter nenhum centavo.</span>
+                </label>
+
+            </div>
+        </div>
+
+        <button type="submit" class="btn btn-submit">Validar Termos do Contrato</button>
+    </form>
+</div>
+
+<script>
+    // Define data/hora mínima (agora)
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+
+    document.getElementById('data_hora').min = `${year}-${month}-${day}T${hours}:${minutes}`;
+</script>
+{% endblock %}
